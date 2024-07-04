@@ -55,30 +55,29 @@ org = numpy.asarray(img)
 
 filter_arr = numpy.array([[-1, -1, -1], [-1, 9, -1], [-1, -1, -1]])
 
-sharp = convolve(org, filter_arr)
+# sharp = convolve(org, filter_arr)
 
-flat = numpy.floor_divide(sharp.sum(2), [[382 for _ in range(org.shape[1])] for _ in range(org.shape[0])])
-print("\u2817")
+flat = numpy.floor_divide(org.sum(2), [[383 for _ in range(org.shape[1])] for _ in range(org.shape[0])])
 
 flat_shape = flat.shape
 
-x_dim = flat_shape[1] // 2
-y_dim = flat_shape[0] // 4
+x_dim = (flat_shape[1] // 2) * 2
+y_dim = (flat_shape[0] // 4) * 4
 
-print(x_dim, y_dim)
 
 output = ""
+
+b_pattern = [(0,0),(1,0),(2,0),(0,1),(1,1),(2,1),(3,0),(3,1)]
 
 for line in range(0, y_dim, 4):
     for block in range(0, x_dim, 2):
         bs = ""
-        for mat_x in range(2):
-            for mat_y in range(4):
-                c = flat[(line * 4) + mat_y][(block * 2) + mat_x].astype(int)
-                if c >= 1:
-                    bs = "1" + bs
-                else:
-                    bs = "0" + bs
+        for cur in b_pattern:
+            c = flat[line + cur[0]][block + cur[1]].astype(int)
+            if c >= 1:
+                bs = "1" + bs
+            else:
+                bs = "0" + bs
         output += chr(int(bs, 2) + int("2800", 16))
     output += "\n"
 
